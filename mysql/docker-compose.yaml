@@ -1,0 +1,15 @@
+
+version: '2'
+
+services:
+  zigerface-mysql:
+    container_name: zigerface-mysql
+    image: zhigui/zigerface-mysql:x86_64-0.1.0
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=zhigui
+    ports:
+      - 3306:3306
+    volumes:
+      - /tmp/explorer/mysql/:/var/lib/mysql
+      - ./db/:/usr/local/work/
