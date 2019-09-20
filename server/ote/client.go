@@ -115,6 +115,11 @@ func transactionResponse(block *cb.Block) {
 	}
 	defer stmTx.Close()
 
+	begin, err := mysql.GetDB().Begin()
+	if err != nil {
+		panic(err.Error())
+	}
+
 	txLen := len(block.Data.Data)
 	var txTime time.Time
 	for i, envBytes := range block.Data.Data {
@@ -141,15 +146,29 @@ func transactionResponse(block *cb.Block) {
 		}
 
 		Logger.Debug("Seek block number:%d, payload:%d", block.Header.Number, txId)
-		_, err = stmTx.Exec(block.Header.Number*uint64(AppConf.TxNumPerBlock)+uint64(i), channelHeader.TxId, "", "", "", 0, txTime)
+		_, err = begin.Stmt(stmTx).Exec(block.Header.Number*uint64(AppConf.TxNumPerBlock)+uint64(i), channelHeader.TxId, "", "", "", 0, txTime)
 		if err != nil {
 			Logger.Warn(err.Error()) // proper error handling instead of panic in your app
 		}
+
+		//_, err = stmTx.Exec(block.Header.Number*uint64(AppConf.TxNumPerBlock)+uint64(i), channelHeader.TxId, "", "", "", 0, txTime)
+		//if err != nil {
+		//	Logger.Warn(err.Error()) // proper error handling instead of panic in your app
+		//}
 	}
 
-	_, err = stmtIns.Exec(block.Header.Number, hex.EncodeToString(block.Header.DataHash), txLen, 0, txTime)
+	_, err = begin.Stmt(stmtIns).Exec(block.Header.Number, hex.EncodeToString(block.Header.DataHash), txLen, 0, txTime)
 	if err != nil {
 		Logger.Warn(err.Error()) // proper error handling instead of panic in your app
+	}
+
+	//_, err = stmtIns.Exec(block.Header.Number, hex.EncodeToString(block.Header.DataHash), txLen, 0, txTime)
+	//if err != nil {
+	//	Logger.Warn(err.Error()) // proper error handling instead of panic in your app
+	//}
+	err = begin.Commit()
+	if err != nil {
+		Logger.Warn(err.Error())
 	}
 }
 
