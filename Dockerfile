@@ -12,5 +12,4 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o fabric-orderer-se
 FROM scratch AS prod
 
 COPY --from=build /go/src/fabric-orderer-seek/fabric-orderer-seek /fabric-orderer-seek
-EXPOSE 8080
 CMD ["/fabric-orderer-seek"]
