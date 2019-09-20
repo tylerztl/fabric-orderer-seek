@@ -7,6 +7,7 @@ services:
   orderer-seek:
     container_name: fabric-orderer-seek
     image: hyperledger/fabric-orderer-seek
+    build: ..
     volumes:
       - ../conf:/go/src/fabric-orderer-seek/conf
       - ../sampleconfig:/go/src/fabric-orderer-seek/sampleconfig
@@ -20,7 +21,7 @@ services:
     ports:
       - 8081:8081
     volumes:
-      - ./server/config.json:/work/config/config.json
+      - ./config/config.json:/work/config/config.json
     networks:
       - byfn
 
