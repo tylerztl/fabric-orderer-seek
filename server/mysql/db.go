@@ -16,6 +16,8 @@ func init() {
 	if err != nil {
 		panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
 	}
+	db.SetMaxOpenConns(dbInfo.MaxOpenConns)
+	db.SetMaxIdleConns(dbInfo.MaxIdleConns)
 	// Open doesn't open a connection. Validate DSN data:
 	err = db.Ping()
 	if err != nil {

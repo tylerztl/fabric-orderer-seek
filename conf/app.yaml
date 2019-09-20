@@ -22,6 +22,8 @@ application:
     name: explore
     host: blockchain-mysql
     port: 3306
+    maxOpenConns: 10000
+    maxIdleConns: 1000
   txNumPerBlock: 100
   seekPositon: 1 # 0 oldest 1 newest
 
