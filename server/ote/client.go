@@ -17,9 +17,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-var blockSQL = "INSERT INTO block VALUES(?,?,?,?,?)"
-var txSQL = "INSERT INTO transaction VALUES(?,?,?,?,?,?,?)"
-
 var (
 	oldest  = &ab.SeekPosition{Type: &ab.SeekPosition_Oldest{Oldest: &ab.SeekOldest{}}}
 	newest  = &ab.SeekPosition{Type: &ab.SeekPosition_Newest{Newest: &ab.SeekNewest{}}}
@@ -103,18 +100,6 @@ func transactionResponse(block *cb.Block) {
 		return
 	}
 
-	stmtIns, err := mysql.GetDB().Prepare(blockSQL) // ? = placeholder
-	if err != nil {
-		panic(err.Error()) // proper error handling instead of panic in your app
-	}
-	defer stmtIns.Close()
-
-	stmTx, err := mysql.GetDB().Prepare(txSQL) // ? = placeholder
-	if err != nil {
-		panic(err.Error()) // proper error handling instead of panic in your app
-	}
-	defer stmTx.Close()
-
 	begin, err := mysql.GetDB().Begin()
 	if err != nil {
 		panic(err.Error())
@@ -146,7 +131,7 @@ func transactionResponse(block *cb.Block) {
 		}
 
 		Logger.Debug("Seek block number:%d, payload:%d", block.Header.Number, txId)
-		_, err = begin.Stmt(stmTx).Exec(block.Header.Number*uint64(AppConf.TxNumPerBlock)+uint64(i), channelHeader.TxId, "", "", "", 0, txTime)
+		_, err = begin.Stmt(mysql.GetStmtTx()).Exec(block.Header.Number*uint64(AppConf.TxNumPerBlock)+uint64(i), channelHeader.TxId, "", "", "", 0, txTime)
 		if err != nil {
 			Logger.Warn(err.Error()) // proper error handling instead of panic in your app
 		}
@@ -157,7 +142,7 @@ func transactionResponse(block *cb.Block) {
 		//}
 	}
 
-	_, err = begin.Stmt(stmtIns).Exec(block.Header.Number, hex.EncodeToString(block.Header.DataHash), txLen, 0, txTime)
+	_, err = begin.Stmt(mysql.GetStmtBlock()).Exec(block.Header.Number, hex.EncodeToString(block.Header.DataHash), txLen, 0, txTime)
 	if err != nil {
 		Logger.Warn(err.Error()) // proper error handling instead of panic in your app
 	}
