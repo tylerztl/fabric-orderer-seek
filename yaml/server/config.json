@@ -1,0 +1,11 @@
+{
+  "host": "localhost",
+  "port": "8081",
+  "jwt_expiretime": "36000",
+  "channelName": "mychannel",
+  "dbHost": "blockchain-mysql",
+  "dbUserName": "root",
+  "dbPassword": "zhigui",
+  "dbPort": "3306",
+  "dbName": "explore"
+}

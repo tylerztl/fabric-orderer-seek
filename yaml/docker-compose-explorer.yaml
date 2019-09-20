@@ -1,0 +1,37 @@
+version: '2'
+
+networks:
+  byfn:
+
+services:
+  orderer-seek:
+    container_name: fabric-orderer-seek
+    image: hyperledger/fabric-orderer-seek
+    volumes:
+      - ../conf:/go/src/fabric-orderer-seek/conf
+      - ../sampleconfig:/go/src/fabric-orderer-seek/sampleconfig
+      - /tmp/orderer-seek-logs:/go/src/fabric-orderer-seek/logs
+    networks:
+      - byfn
+
+  blockchain-fullserver:
+    container_name: blockchain-fullserver
+    image: inklabsfoundation/inkerface-fullserver:x86_64-0.17.5
+    ports:
+      - 8081:8081
+    volumes:
+      - ./server/config.json:/work/config/config.json
+    networks:
+      - byfn
+
+  blockchain-explorer:
+    container_name: blockchain-explorer
+    image: inklabsfoundation/inkerface-nginxcli:x86_64-0.2.0
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/explore.conf:/etc/nginx/conf.d/explore.conf
+    depends_on:
+      - blockchain-fullserver
+    networks:
+      - byfn

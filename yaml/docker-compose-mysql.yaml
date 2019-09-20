@@ -1,9 +1,12 @@
 
 version: '2'
 
+networks:
+  byfn:
+
 services:
-  zigerface-mysql:
-    container_name: zigerface-mysql
+  blockchain-mysql:
+    container_name: blockchain-mysql
     image: zhigui/zigerface-mysql:x86_64-0.1.0
     restart: always
     environment:
@@ -13,3 +16,5 @@ services:
     volumes:
       - /tmp/explorer/mysql/:/var/lib/mysql
       - ./db/:/usr/local/work/
+    networks:
+      - byfn

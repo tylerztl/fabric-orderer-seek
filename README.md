@@ -1,50 +1,20 @@
-## Orderer Traffic Engine
-This Orderer Traffic Engine (OTE) tool tests the operation of a
-hyperledger fabric ordering service.
-
-### Architecture
-![ote](https://github.com/BeDreamCoder/fabric-orderer-benchmark/blob/master/OTE.jpg)
-
 ### Prerequisites
 - Go 1.10+ installation or later
 - GOPATH environment variable is set correctly
-- Govendor version 1.0.9 or later
 - Protoc Plugin
 - Protocol Buffers
 
 ### Getting started
-#### 1. Download fabric images
-```
-./scripts/download_images.sh
-```
-#### 2. Start the fabric network
-```
-make networkUp
-```
-#### 3. Create channel
-```
-make cli
-```
-#### 4. Start the ote server
-4.1 binary start 
-```
-
-```
-4.2 docker start
+#### 1. Build images
 ```
 docker build -t hyperledger/fabric-orderer-seek .
-docker-compose up -d
 ```
-
-#### 5. Running the test suite
+#### 2. Start mysql
 ```
-cd test
+cd yaml
+docker-compose -f docker-compose-mysql.yaml up -d
 ```
-
-### ghz 
-Simple [gRPC](http://grpc.io/) benchmarking and load testing tool inspired by [hey](https://github.com/rakyll/hey/) and [grpcurl](https://github.com/fullstorydev/grpcurl).
-
+#### 3. Start explorer
 ```
-cd ghz
-./ghz --config=./config.json 
+docker-compose -f docker-compose-explorer.yaml up -d
 ```

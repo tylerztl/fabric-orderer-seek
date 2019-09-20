@@ -13,4 +13,4 @@ FROM scratch AS prod
 
 COPY --from=build /go/src/fabric-orderer-seek/fabric-orderer-seek /fabric-orderer-seek
 EXPOSE 8080
-CMD ["/fabric-orderer-benchmark", "start"]
+CMD ["/fabric-orderer-seek"]
