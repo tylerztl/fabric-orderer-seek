@@ -111,10 +111,12 @@ func transactionResponse(block *cb.Block) {
 		envelope, err := utils.GetEnvelopeFromBlock(envBytes)
 		if err != nil {
 			Logger.Error("Error GetEnvelopeFromBlock:", err)
+			break
 		}
 		payload, err := utils.GetPayload(envelope)
 		if err != nil {
 			Logger.Error("Error GetPayload:", err)
+			break
 		}
 
 		channelHeader, _ := utils.UnmarshalChannelHeader(payload.Header.ChannelHeader)
@@ -124,10 +126,12 @@ func transactionResponse(block *cb.Block) {
 		msg := cb.ConfigValue{}
 		if err := proto.Unmarshal(payload.Data, &msg); err != nil {
 			Logger.Error("Error proto unmarshal", err)
+			break
 		}
 		txId, err := strconv.ParseUint(string(msg.Value), 10, 64)
 		if err != nil {
 			Logger.Error("Error ParseUint:", err)
+			break
 		}
 
 		Logger.Debug("Seek block number:%d, payload:%d", block.Header.Number, txId)
